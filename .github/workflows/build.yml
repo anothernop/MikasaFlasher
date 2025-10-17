@@ -1,13 +1,33 @@
-name: Build Windows mikasa.exe
-on: [push]
+name: Build and Release mikasa.exe
+
+on:
+  push:
+    tags:
+      - 'v*'
+
 jobs:
-  build:
+  build-and-release:
     runs-on: windows-latest
     steps:
-    - uses: actions/checkout@v4
-    - uses: actions/setup-python@v5
-      with: { python-version: '3.12' }
-    - run: pip install nuitka
-    - run: python -m nuitka --onefile mikasa.py
-    - uses: actions/upload-artifact@v4
-      with: { name: exe, path: mikasa.dist/mikasa.exe}
+    - name: Checkout code
+      uses: actions/checkout@v4
+    - name: Set up Python
+      uses: actions/setup-python@v5
+      with:
+        python-version: '3.12'
+    - name: Install Nuitka
+      run: pip install nuitka
+    - name: Copy Dependency Walker
+      run: |
+        mkdir -p "C:\Users\runneradmin\AppData\Local\Nuitka\Nuitka\Cache\downloads\depends\x86_64"
+        copy tools\depends.exe "C:\Users\runneradmin\AppData\Local\Nuitka\Nuitka\Cache\downloads\depends\x86_64\depends.exe"
+    - name: Build executable
+      run: python -m nuitka --onefile --follow-imports mikasa.py
+    - name: Create Release
+      uses: softprops/action-gh-release@v2
+      with:
+        files: mikasa.dist/mikasa.exe
+        name: Release ${{ github.ref_name }}
+        body: "Automated release for ${{ github.ref_name }}"
+      env:
+        GITHUB_TOKEN: ${{ secrets.GH_TOKENEXE

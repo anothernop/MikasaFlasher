@@ -10,4 +10,4 @@ jobs:
     - run: pip install nuitka
     - run: python -m nuitka --onefile test.py
     - uses: actions/upload-artifact@v4
-      with: { name: exe, path: mikasa.dist/mikasa.exe
+      with: { name: exe, path: mikasa.dist/mikasa.exe}

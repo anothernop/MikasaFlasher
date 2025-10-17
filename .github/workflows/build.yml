@@ -1,7 +1,7 @@
 name: Build and Release mikasa flasher
 
 on:
-  workflow_dispatch:
+workflow_dispatch:
   push:
     tags:
       - 'v*'
@@ -18,10 +18,6 @@ jobs:
         python-version: '3.12'
     - name: Install Nuitka
       run: pip install nuitka
-    - name: Copy Dependency Walker
-      run: |
-        mkdir -p "C:\Users\runneradmin\AppData\Local\Nuitka\Nuitka\Cache\downloads\depends\x86_64"
-        if exist "tools\depends.exe" (copy "tools\depends.exe" "C:\Users\runneradmin\AppData\Local\Nuitka\Nuitka\Cache\downloads\depends\x86_64\depends.exe") else (echo ERROR: depends.exe not found && exit 1)
     - name: Build executable
       run: python -m nuitka --onefile --follow-imports --assume-yes-for-downloads test.py
     - name: Create Release

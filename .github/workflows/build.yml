@@ -1,4 +1,4 @@
-name: Build and Release mikasa.exe
+name: Build and Release mikasa flasher
 
 on:
   workflow_dispatch:
@@ -21,9 +21,9 @@ jobs:
     - name: Copy Dependency Walker
       run: |
         mkdir -p "C:\Users\runneradmin\AppData\Local\Nuitka\Nuitka\Cache\downloads\depends\x86_64"
-        copy tools\depends.exe "C:\Users\runneradmin\AppData\Local\Nuitka\Nuitka\Cache\downloads\depends\x86_64\depends.exe"
+        if exist "tools\depends.exe" (copy "tools\depends.exe" "C:\Users\runneradmin\AppData\Local\Nuitka\Nuitka\Cache\downloads\depends\x86_64\depends.exe") else (echo ERROR: depends.exe not found && exit 1)
     - name: Build executable
-      run: python -m nuitka --onefile --follow-imports mikasa.py
+      run: python -m nuitka --onefile --follow-imports --assume-yes-for-downloads test.py
     - name: Create Release
       uses: softprops/action-gh-release@v2
       with:
@@ -31,4 +31,4 @@ jobs:
         name: Release ${{ github.ref_name }}
         body: "Automated release for ${{ github.ref_name }}"
       env:
-        GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
+        GITHUB_TOKEN: ${{ github.token }}

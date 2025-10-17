@@ -30,4 +30,4 @@ jobs:
         name: Release ${{ github.ref_name }}
         body: "Automated release for ${{ github.ref_name }}"
       env:
-        GITHUB_TOKEN: ${{ secrets.GH_TOKENEXE
+        GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}

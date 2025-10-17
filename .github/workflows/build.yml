@@ -31,7 +31,7 @@ jobs:
       with:
         files: mikasa.dist/mikasa.exe
         name: Draft Release ${{ github.run_number }}
-        body: "Manual draft release for MikasaFlasher (Run #${{ github.run_number }})"
+        body: "Manual draft release for mikasa (Run #${{ github.run_number }})"
         draft: true
       env:
         GITHUB_TOKEN: ${{ github.token }}

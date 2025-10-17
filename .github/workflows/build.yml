@@ -1,9 +1,7 @@
-name: Build and Release mikasa flasher
+name: Build and Release for windows
 
 on:
-  push:
-    tags:
-      - 'v*'
+  workflow_dispatch:
 
 jobs:
   build-and-release:
@@ -17,13 +15,21 @@ jobs:
         python-version: '3.12'
     - name: Install Nuitka
       run: pip install nuitka
+    - name: Copy Dependency Walker
+      run: |
+        New-Item -ItemType Directory -Force -Path "C:\Users\runneradmin\AppData\Local\Nuitka\Nuitka\Cache\downloads\depends\x86_64"
+        if (Test-Path "tools\depends.exe") {
+          Copy-Item "tools\depends.exe" "C:\Users\runneradmin\AppData\Local\Nuitka\Nuitka\Cache\downloads\depends\x86_64\depends.exe"
+        } else {
+          Write-Output "depends.exe not found, relying on --assume-yes-for-downloads"
+        }
     - name: Build executable
-      run: python -m nuitka --onefile --follow-imports --assume-yes-for-downloads test.py
+      run: python -m nuitka --onefile --follow-imports --assume-yes-for-downloads mikasa.py
     - name: Create Release
       uses: softprops/action-gh-release@v2
       with:
         files: mikasa.dist/mikasa.exe
-        name: Release ${{ github.ref_name }}
-        body: "Automated release for ${{ github.ref_name }}"
+        name: Release ${{ github.run_number }}
+        body: "Manual release for MikasaFlasher ${{ github.run_number }}"
       env:
         GITHUB_TOKEN: ${{ github.token }}
